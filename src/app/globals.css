@@ -1,0 +1,184 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant rtl (&:where([dir="rtl"], [dir="rtl"] *));
+
+/* ---------------------------------------------------------------------------
+   רק פרטי — Design tokens
+   Brand palette is the single source of truth. Semantic tokens map onto it.
+   --------------------------------------------------------------------------- */
+:root {
+  /* Brand palette */
+  --brand-teal: #16454a;
+  --brand-dark: #18383b;
+  --brand-text: #202a2b;
+  --brand-bg: #f5f5f0;
+  --brand-white: #ffffff;
+  --brand-muted: #647274;
+  --brand-soft-green: #e5eeea;
+  --brand-amber: #c48a45;
+  --brand-success: #287653;
+  --brand-warning: #b77924;
+  --brand-error: #b44747;
+  --brand-border: #e2e6e2;
+
+  /* Derived tints (computed from palette — not new colors) */
+  --brand-teal-hover: color-mix(in oklab, var(--brand-teal) 88%, black);
+  --brand-teal-soft: color-mix(in oklab, var(--brand-teal) 8%, white);
+  --brand-amber-soft: color-mix(in oklab, var(--brand-amber) 14%, white);
+  --brand-success-soft: color-mix(in oklab, var(--brand-success) 12%, white);
+  --brand-warning-soft: color-mix(in oklab, var(--brand-warning) 14%, white);
+  --brand-error-soft: color-mix(in oklab, var(--brand-error) 10%, white);
+
+  /* Semantic tokens (shadcn-compatible names) */
+  --background: var(--brand-bg);
+  --foreground: var(--brand-text);
+  --card: var(--brand-white);
+  --card-foreground: var(--brand-text);
+  --popover: var(--brand-white);
+  --popover-foreground: var(--brand-text);
+  --primary: var(--brand-teal);
+  --primary-foreground: var(--brand-white);
+  --secondary: var(--brand-soft-green);
+  --secondary-foreground: var(--brand-dark);
+  --muted: var(--brand-soft-green);
+  --muted-foreground: var(--brand-muted);
+  --accent: var(--brand-amber);
+  --accent-foreground: var(--brand-white);
+  --destructive: var(--brand-error);
+  --destructive-foreground: var(--brand-white);
+  --success: var(--brand-success);
+  --warning: var(--brand-warning);
+  --border: var(--brand-border);
+  --input: var(--brand-border);
+  --ring: var(--brand-teal);
+
+  /* Radii */
+  --radius: 0.75rem;
+  --radius-sm: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+
+  /* Elevation */
+  --shadow-card: 0 1px 2px rgb(24 56 59 / 0.06), 0 4px 16px rgb(24 56 59 / 0.06);
+  --shadow-card-hover: 0 2px 4px rgb(24 56 59 / 0.08), 0 12px 32px rgb(24 56 59 / 0.1);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-hover: var(--brand-teal-hover);
+  --color-primary-soft: var(--brand-teal-soft);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-soft: var(--brand-amber-soft);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-soft: var(--brand-error-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--brand-success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--brand-warning-soft);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-brand-dark: var(--brand-dark);
+  --color-brand-teal: var(--brand-teal);
+  --color-brand-amber: var(--brand-amber);
+  --color-brand-muted: var(--brand-muted);
+
+  --font-sans: var(--font-heebo), "Heebo", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+
+  --shadow-card: var(--shadow-card);
+  --shadow-card-hover: var(--shadow-card-hover);
+
+  /* Typographic scale */
+  --text-display: 2.75rem;
+  --text-display--line-height: 1.1;
+  --text-display--letter-spacing: -0.01em;
+  --text-h1: 2.125rem;
+  --text-h1--line-height: 1.15;
+  --text-h2: 1.625rem;
+  --text-h2--line-height: 1.2;
+  --text-h3: 1.25rem;
+  --text-h3--line-height: 1.3;
+
+  --animate-fade-in: fade-in 200ms ease-out both;
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/60;
+  }
+  html {
+    @apply h-full scroll-smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply min-h-full bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "kern" 1;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--brand-teal) 20%, white);
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring rounded-sm;
+  }
+  h1, h2, h3, h4 {
+    @apply font-bold text-balance;
+    color: var(--brand-dark);
+  }
+  p { @apply text-pretty; }
+  img { @apply max-w-full h-auto; }
+  input, textarea, select, button { font: inherit; }
+  /* Honest numeric rendering inside RTL text */
+  .num, [data-ltr] {
+    direction: ltr;
+    unicode-bidi: isolate;
+    font-variant-numeric: tabular-nums;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  .container-page {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+  .card-surface {
+    @apply bg-card rounded-lg border border-border shadow-card;
+  }
+  .sr-only-focusable:not(:focus):not(:focus-within) {
+    @apply sr-only;
+  }
+  .text-display { font-size: var(--text-display); line-height: 1.1; letter-spacing: -0.01em; }
+  .scrollbar-none { scrollbar-width: none; }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+}
