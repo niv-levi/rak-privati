@@ -125,7 +125,7 @@ export async function lookupForListingAction(listingId: string, plateInput: stri
   return succeed({ report, prefill });
 }
 
-export async function confirmOfficialDataAction(listingId: string, input: z.input<typeof officialConfirmSchema>): Promise<ActionResult> {
+export async function confirmOfficialDataAction(listingId: string, input: unknown): Promise<ActionResult> {
   const c = await ownerCtx(listingId);
   if (!c) return fail("המודעה לא נמצאה");
   const parsed = officialConfirmSchema.safeParse(input);
@@ -135,7 +135,7 @@ export async function confirmOfficialDataAction(listingId: string, input: z.inpu
   return succeed(undefined);
 }
 
-export async function saveVehicleStepAction(listingId: string, input: z.input<typeof vehicleStepSchema>): Promise<ActionResult> {
+export async function saveVehicleStepAction(listingId: string, input: unknown): Promise<ActionResult> {
   const c = await ownerCtx(listingId);
   if (!c) return fail("המודעה לא נמצאה");
   const parsed = vehicleStepSchema.safeParse(input);
@@ -157,7 +157,7 @@ export async function saveVehicleStepAction(listingId: string, input: z.input<ty
   return succeed(undefined);
 }
 
-export async function saveSaleStepAction(listingId: string, input: z.input<typeof saleStepSchema>): Promise<ActionResult> {
+export async function saveSaleStepAction(listingId: string, input: unknown): Promise<ActionResult> {
   const c = await ownerCtx(listingId);
   if (!c) return fail("המודעה לא נמצאה");
   const parsed = saleStepSchema.safeParse(input);
@@ -169,7 +169,7 @@ export async function saveSaleStepAction(listingId: string, input: z.input<typeo
   return succeed(undefined);
 }
 
-export async function saveConditionStepAction(listingId: string, input: z.input<typeof conditionStepSchema>): Promise<ActionResult> {
+export async function saveConditionStepAction(listingId: string, input: unknown): Promise<ActionResult> {
   const c = await ownerCtx(listingId);
   if (!c) return fail("המודעה לא נמצאה");
   const parsed = conditionStepSchema.safeParse(input);
@@ -184,7 +184,7 @@ export async function saveConditionStepAction(listingId: string, input: z.input<
   return succeed(undefined);
 }
 
-export async function saveContactStepAction(listingId: string, input: z.input<typeof contactStepSchema>): Promise<ActionResult> {
+export async function saveContactStepAction(listingId: string, input: unknown): Promise<ActionResult> {
   const c = await ownerCtx(listingId);
   if (!c) return fail("המודעה לא נמצאה");
   const parsed = contactStepSchema.safeParse(input);

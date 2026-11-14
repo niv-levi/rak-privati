@@ -22,7 +22,7 @@ import { formatDate, formatNumber } from "@/lib/format";
 import { bodyStyleLabels, conditionLabels, fuelLabels, ownershipLabels, transmissionLabels, equipmentOptions } from "@/lib/labels";
 import { PRIVATE_SELLER_DECLARATION_TEXT } from "@/features/consents/text";
 import type { VehicleReport } from "@/lib/providers/types";
-import { vehicleStepSchema, saleStepSchema, conditionStepSchema, contactStepSchema, type VehicleStepInput, type SaleStepInput, type ConditionStepInput, type ContactStepInput } from "../schemas";
+import { vehicleStepSchema, saleStepSchema, conditionStepSchema, contactStepSchema, type VehicleStepInput, type VehicleStepOutput, type SaleStepInput, type SaleStepOutput, type ConditionStepInput, type ConditionStepOutput, type ContactStepInput, type ContactStepOutput } from "../schemas";
 import { lookupForListingAction, confirmOfficialDataAction, saveVehicleStepAction, saveSaleStepAction, saveConditionStepAction, saveContactStepAction, acceptDeclarationAction } from "../actions";
 import { StepShell, FormError } from "./step-shell";
 import type { WizardData } from "./wizard-types";
@@ -30,9 +30,9 @@ import type { ActionResult } from "@/lib/actions/result";
 
 type StepProps = { data: WizardData; onDone: () => void; onBack?: () => void; refresh: () => void };
 
-function applyFieldErrors<T extends Record<string, unknown>>(r: ActionResult<unknown>, setError: (name: keyof T & string, err: { message: string }) => void) {
+function applyFieldErrors(r: ActionResult<unknown>, setError: (name: never, err: { message: string }) => void) {
   if (r.ok) return;
-  for (const [k, v] of Object.entries(r.fieldErrors ?? {})) setError(k as keyof T & string, { message: v });
+  for (const [k, v] of Object.entries(r.fieldErrors ?? {})) setError(k as never, { message: v });
 }
 
 // ---------------------------------------------------------------- 1. Plate
@@ -120,7 +120,7 @@ export function OfficialStep({ data, onDone, onBack }: StepProps) {
 // -------------------------------------------------------------- 3. Vehicle
 export function VehicleStep({ data, onDone, onBack, refresh }: StepProps) {
   const l = data.listing;
-  const form = useForm<VehicleStepInput>({
+  const form = useForm<VehicleStepInput, unknown, VehicleStepOutput>({
     resolver: zodResolver(vehicleStepSchema),
     defaultValues: {
       make_id: l.make_id ?? "", model_id: l.model_id ?? "", trim_id: l.trim_id ?? "", trim_name: l.trim_name ?? "", year: l.year ?? ("" as unknown as number), mileage_km: l.mileage_km ?? ("" as unknown as number),
@@ -140,7 +140,7 @@ export function VehicleStep({ data, onDone, onBack, refresh }: StepProps) {
     start(async () => {
       setServerError(null);
       const r = await saveVehicleStepAction(l.id, values);
-      if (!r.ok) { applyFieldErrors<VehicleStepInput>(r, form.setError as never); return setServerError(r.error); }
+      if (!r.ok) { applyFieldErrors(r, form.setError as never); return setServerError(r.error); }
       refresh(); onDone();
     })
   );
@@ -211,11 +211,11 @@ export function VehicleStep({ data, onDone, onBack, refresh }: StepProps) {
 // ------------------------------------------------------------------ 4. Sale
 export function SaleStep({ data, onDone, onBack, refresh }: StepProps) {
   const l = data.listing;
-  const form = useForm<SaleStepInput>({ resolver: zodResolver(saleStepSchema), defaultValues: { price: l.price ?? ("" as unknown as number), city_id: l.city_id ?? "", neighborhood: l.neighborhood ?? "", condition: l.condition ?? ("" as never) } });
+  const form = useForm<SaleStepInput, unknown, SaleStepOutput>({ resolver: zodResolver(saleStepSchema), defaultValues: { price: l.price ?? ("" as unknown as number), city_id: l.city_id ?? "", neighborhood: l.neighborhood ?? "", condition: l.condition ?? ("" as never) } });
   const [serverError, setServerError] = React.useState<string | null>(null);
   const [pending, start] = React.useTransition();
   const E = form.formState.errors;
-  const onSubmit = form.handleSubmit((values) => start(async () => { setServerError(null); const r = await saveSaleStepAction(l.id, values); if (!r.ok) { applyFieldErrors<SaleStepInput>(r, form.setError as never); return setServerError(r.error); } refresh(); onDone(); }));
+  const onSubmit = form.handleSubmit((values) => start(async () => { setServerError(null); const r = await saveSaleStepAction(l.id, values); if (!r.ok) { applyFieldErrors(r, form.setError as never); return setServerError(r.error); } refresh(); onDone(); }));
   return (
     <form onSubmit={onSubmit} noValidate>
       <StepShell title="פרטי המכירה" description="המחיר המבוקש, מיקום הרכב ומצבו הכללי." onBack={onBack} pending={pending}>
@@ -242,7 +242,7 @@ export function SaleStep({ data, onDone, onBack, refresh }: StepProps) {
 // ------------------------------------------------------------- 6. Condition
 export function ConditionStep({ data, onDone, onBack, refresh }: StepProps) {
   const l = data.listing;
-  const form = useForm<ConditionStepInput>({
+  const form = useForm<ConditionStepInput, unknown, ConditionStepOutput>({
     resolver: zodResolver(conditionStepSchema),
     defaultValues: { maintenance_history: l.maintenance_history ?? "", accident_declared: l.accident_declared == null ? ("" as never) : l.accident_declared ? "yes" : "no", accident_details: l.accident_details ?? "", body_repairs_declared: l.body_repairs_declared == null ? ("" as never) : l.body_repairs_declared ? "yes" : "no", body_repair_details: l.body_repair_details ?? "", equipment: l.equipment ?? [], description: l.description ?? "" },
   });
@@ -252,7 +252,7 @@ export function ConditionStep({ data, onDone, onBack, refresh }: StepProps) {
   const accident = form.watch("accident_declared");
   const repairs = form.watch("body_repairs_declared");
   const desc = form.watch("description") ?? "";
-  const onSubmit = form.handleSubmit((values) => start(async () => { setServerError(null); const r = await saveConditionStepAction(l.id, values); if (!r.ok) { applyFieldErrors<ConditionStepInput>(r, form.setError as never); return setServerError(r.error); } refresh(); onDone(); }));
+  const onSubmit = form.handleSubmit((values) => start(async () => { setServerError(null); const r = await saveConditionStepAction(l.id, values); if (!r.ok) { applyFieldErrors(r, form.setError as never); return setServerError(r.error); } refresh(); onDone(); }));
   return (
     <form onSubmit={onSubmit} noValidate>
       <StepShell title="מצב הרכב ותיאור" description="כנות משתלמת: מודעות שמפרטות את מצב הרכב באמת זוכות לפחות ביטולים ויותר אמון." onBack={onBack} pending={pending}>
@@ -306,11 +306,11 @@ export function ConditionStep({ data, onDone, onBack, refresh }: StepProps) {
 // ---------------------------------------------------------------- 7. Contact
 export function ContactStep({ data, onDone, onBack, refresh }: StepProps) {
   const l = data.listing;
-  const form = useForm<ContactStepInput>({ resolver: zodResolver(contactStepSchema), defaultValues: { display_name: data.profile.display_name ?? "", contact_phone_opt_in: l.contact_phone_opt_in, contact_whatsapp_opt_in: l.contact_whatsapp_opt_in, contact_hours: l.contact_hours ?? "" } });
+  const form = useForm<ContactStepInput, unknown, ContactStepOutput>({ resolver: zodResolver(contactStepSchema), defaultValues: { display_name: data.profile.display_name ?? "", contact_phone_opt_in: l.contact_phone_opt_in, contact_whatsapp_opt_in: l.contact_whatsapp_opt_in, contact_hours: l.contact_hours ?? "" } });
   const [serverError, setServerError] = React.useState<string | null>(null);
   const [pending, start] = React.useTransition();
   const E = form.formState.errors;
-  const onSubmit = form.handleSubmit((values) => start(async () => { setServerError(null); const r = await saveContactStepAction(l.id, values); if (!r.ok) { applyFieldErrors<ContactStepInput>(r, form.setError as never); return setServerError(r.error); } refresh(); onDone(); }));
+  const onSubmit = form.handleSubmit((values) => start(async () => { setServerError(null); const r = await saveContactStepAction(l.id, values); if (!r.ok) { applyFieldErrors(r, form.setError as never); return setServerError(r.error); } refresh(); onDone(); }));
   return (
     <form onSubmit={onSubmit} noValidate>
       <StepShell title="איך קונים ייצרו איתך קשר?" description="מספר הטלפון המאומת שלך נחשף רק למשתמשים מחוברים, רק אחרי לחיצה מכוונת, ורק בערוצים שתאשר/י כאן." onBack={onBack} pending={pending}>

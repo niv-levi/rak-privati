@@ -141,3 +141,9 @@ export async function signOutAction(): Promise<void> {
   if (supabase) await supabase.auth.signOut();
   redirect("/");
 }
+
+export async function signOutEverywhereAction(): Promise<void> {
+  const supabase = await createSupabaseServerClient();
+  if (supabase) await supabase.auth.signOut({ scope: "global" });
+  redirect("/login");
+}

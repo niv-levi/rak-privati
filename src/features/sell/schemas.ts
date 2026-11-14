@@ -56,9 +56,13 @@ export const officialConfirmSchema = z.object({
 }).refine((d) => d.confirmed || d.discrepancy_notes, { message: "אם הפרטים אינם נכונים, יש לציין מה שגוי", path: ["discrepancy_notes"] });
 
 export type VehicleStepInput = z.input<typeof vehicleStepSchema>;
+export type VehicleStepOutput = z.output<typeof vehicleStepSchema>;
 export type SaleStepInput = z.input<typeof saleStepSchema>;
+export type SaleStepOutput = z.output<typeof saleStepSchema>;
 export type ConditionStepInput = z.input<typeof conditionStepSchema>;
+export type ConditionStepOutput = z.output<typeof conditionStepSchema>;
 export type ContactStepInput = z.input<typeof contactStepSchema>;
+export type ContactStepOutput = z.output<typeof contactStepSchema>;
 
 export const WIZARD_STEPS = [
   { key: "plate", title: "מספר רישוי" },
