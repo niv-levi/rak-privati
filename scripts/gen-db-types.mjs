@@ -48,7 +48,9 @@ for (const r of cols.rows) {
 const fns = await client.query(`
   select p.proname, pg_get_function_arguments(p.oid) as args, pg_get_function_result(p.oid) as result, p.proretset
   from pg_proc p join pg_namespace n on n.oid = p.pronamespace
-  where n.nspname = 'public' and p.prokind = 'f' order by p.proname`);
+  where n.nspname = 'public' and p.prokind = 'f'
+    and not exists (select 1 from pg_depend d where d.objid = p.oid and d.deptype = 'e')
+  order by p.proname`);
 
 const tsType = (c) => pgToTs(c.udt_name, c.data_type, enums) + (c.is_nullable === "YES" ? " | null" : "");
 
@@ -103,6 +105,7 @@ const sqlTypeToTs = (t) => {
 for (const f of fns.rows) {
   if (f.proname.startsWith("set_") || f.proname.startsWith("handle_") || f.proname.startsWith("guard_") || f.proname.startsWith("on_") || f.proname.includes("trigger") || f.result === "trigger") continue;
   const args = parseArgs(f.args);
+  if (args.some((a) => !/^[a-z_][a-z0-9_]*$/i.test(a.name) || a.name === "OUT")) continue;
   const argTs = args.length ? `{ ${args.map((a) => `${a.name}: ${sqlTypeToTs(a.type)}`).join("; ")} }` : "Record<string, never>";
   let ret;
   const m = f.result.match(/^(SETOF )?TABLE\((.*)\)$/s);
