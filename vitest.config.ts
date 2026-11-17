@@ -5,7 +5,7 @@ import path from "node:path";
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    alias: { "@": path.resolve(__dirname, "./src") },
+    alias: { "@": path.resolve(__dirname, "./src"), "server-only": path.resolve(__dirname, "./tests/mocks/server-only.ts") },
   },
   test: {
     globals: true,
@@ -15,6 +15,5 @@ export default defineConfig({
     exclude: ["tests/e2e/**", "node_modules/**"],
     testTimeout: 30000,
     hookTimeout: 60000,
-    server: { deps: { inline: ["server-only"] } },
   },
 });

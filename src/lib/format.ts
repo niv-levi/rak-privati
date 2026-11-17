@@ -88,10 +88,19 @@ export function formatIsraeliPhone(e164: string | null | undefined): string {
   return local;
 }
 
+/** 050-123-4567 -> 050-•••-••67 (prefix and last two digits only). */
 export function maskPhone(e164: string | null | undefined): string {
   if (!e164) return "—";
   const f = formatIsraeliPhone(e164);
-  return f.replace(/\d(?=\d{2})/g, "•").replace(/^•{3}/, f.slice(0, 3));
+  const digits = f.replace(/\D/g, "");
+  if (digits.length < 6) return "•••";
+  let seen = 0;
+  const keepHead = 3;
+  const keepTail = digits.length - 2;
+  return f.replace(/\d/g, (d) => {
+    const i = seen++;
+    return i < keepHead || i >= keepTail ? d : "•";
+  });
 }
 
 export function pluralHe(count: number, singular: string, plural: string): string {
