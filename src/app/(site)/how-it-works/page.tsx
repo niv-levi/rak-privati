@@ -32,7 +32,7 @@ export default function HowItWorksPage() {
         </section>
         <section aria-labelledby="sellers">
           <h2 id="sellers" className="text-h2 font-extrabold">למוכרים</h2>
-          <ol className="mt-4 space-y-3">{seller.map((s, i) => <li key={s.t}><Card><CardContent className="flex gap-4 pt-5"><span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent text-white"><s.icon className="size-5" aria-hidden /></span><div><p className="font-bold"><span className="num text-brand-amber">{i + 1}.</span> {s.t}</p><p className="text-sm text-muted-foreground leading-relaxed">{s.d}</p></div></CardContent></Card></li>)}</ol>
+          <ol className="mt-4 space-y-3">{seller.map((s, i) => <li key={s.t}><Card><CardContent className="flex gap-4 pt-5"><span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent text-white"><s.icon className="size-5" aria-hidden /></span><div><p className="font-bold"><span className="num text-accent-strong">{i + 1}.</span> {s.t}</p><p className="text-sm text-muted-foreground leading-relaxed">{s.d}</p></div></CardContent></Card></li>)}</ol>
           <Link href="/sell" className={buttonVariants({ variant: "accent", className: "mt-5" })}>פרסום רכב</Link>
         </section>
       </div>

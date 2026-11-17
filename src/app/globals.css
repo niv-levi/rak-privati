@@ -29,10 +29,14 @@
   --brand-success-soft: color-mix(in oklab, var(--brand-success) 12%, white);
   --brand-warning-soft: color-mix(in oklab, var(--brand-warning) 14%, white);
   --brand-error-soft: color-mix(in oklab, var(--brand-error) 10%, white);
+  /* Accessible derived shades (WCAG AA 4.5:1 for small text): amber/warning mixed toward black */
+  --brand-amber-strong: color-mix(in oklab, var(--brand-amber) 70%, black);
+  --brand-warning-strong: color-mix(in oklab, var(--brand-warning) 72%, black);
 
   /* Semantic tokens (shadcn-compatible names) */
   --background: var(--brand-bg);
   --foreground: var(--brand-text);
+  --heading: var(--brand-dark);
   --card: var(--brand-white);
   --card-foreground: var(--brand-text);
   --popover: var(--brand-white);
@@ -42,13 +46,14 @@
   --secondary: var(--brand-soft-green);
   --secondary-foreground: var(--brand-dark);
   --muted: var(--brand-soft-green);
-  --muted-foreground: var(--brand-muted);
-  --accent: var(--brand-amber);
+  /* #647274 darkened slightly so secondary text keeps 4.5:1 on soft-green surfaces */
+  --muted-foreground: color-mix(in oklab, var(--brand-muted) 85%, black);
+  --accent: var(--brand-amber-strong);
   --accent-foreground: var(--brand-white);
   --destructive: var(--brand-error);
   --destructive-foreground: var(--brand-white);
   --success: var(--brand-success);
-  --warning: var(--brand-warning);
+  --warning: var(--brand-warning-strong);
   --border: var(--brand-border);
   --input: var(--brand-border);
   --ring: var(--brand-teal);
@@ -82,6 +87,7 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent-soft: var(--brand-amber-soft);
+  --color-accent-strong: var(--brand-amber-strong);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-destructive-soft: var(--brand-error-soft);
@@ -145,9 +151,9 @@
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-ring rounded-sm;
   }
+  /* Headings inherit color so they stay legible on dark sections; body text color is set on <body>. */
   h1, h2, h3, h4 {
     @apply font-bold text-balance;
-    color: var(--brand-dark);
   }
   p { @apply text-pretty; }
   img { @apply max-w-full h-auto; }
