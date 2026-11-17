@@ -279,6 +279,48 @@ export type Database = {
         };
         Relationships: [];
       };
+      contact_messages: {
+        Row: {
+          id: string;
+          user_id: string | null;
+          topic: string;
+          name: string | null;
+          email: string | null;
+          phone: string | null;
+          message: string;
+          ip_hash: string | null;
+          status: string;
+          handled_by: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id?: string | null;
+          topic: string;
+          name?: string | null;
+          email?: string | null;
+          phone?: string | null;
+          message: string;
+          ip_hash?: string | null;
+          status?: string;
+          handled_by?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string | null;
+          topic?: string;
+          name?: string | null;
+          email?: string | null;
+          phone?: string | null;
+          message?: string;
+          ip_hash?: string | null;
+          status?: string;
+          handled_by?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       favorites: {
         Row: {
           user_id: string;
