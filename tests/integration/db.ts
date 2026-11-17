@@ -106,22 +106,25 @@ export async function makeDraftListing(tx: Tx, uid: string, declarationId: strin
   await tx.asUser(uid);
   const plate = (overrides.plate as string) ?? "1234567";
   const { rows } = await tx.sql<{ id: string }>(
-    `insert into public.listings (seller_id, declaration_id, plate_hash, plate_masked, make_id, model_id, make_name, model_name, year, mileage_km, price, city_id, district_id, fuel_type, transmission, description, contact_phone_opt_in)
-     values ($1, $2, $3, $4, $5, $6, 'טויוטה', 'קורולה', $7, $8, $9, $10, $11, 'petrol', 'automatic', $12, true) returning id`,
+    `insert into public.listings (seller_id, declaration_id, make_id, model_id, make_name, model_name, year, mileage_km, price, city_id, district_id, fuel_type, transmission, description, contact_phone_opt_in)
+     values ($1, $2, $3, $4, 'טויוטה', 'קורולה', $5, $6, $7, $8, $9, 'petrol', 'automatic', $10, true) returning id`,
     [
-      uid, declarationId, "hash_" + plate, "••-•••-" + plate.slice(-2), make.rows[0].id, model.rows[0].id,
+      uid, declarationId, make.rows[0].id, model.rows[0].id,
       overrides.year ?? 2020, overrides.mileage_km ?? 60000, overrides.price ?? 85000, city.rows[0].id, city.rows[0].district_id,
       overrides.description ?? "רכב שמור מאוד, יד ראשונה, טיפולים במוסך מורשה בלבד. ללא תאונות. מחיר גמיש במעט לרציניים.",
     ]
   );
   const id = rows[0].id;
   await tx.sql("insert into public.listing_private_data (listing_id, plate_number) values ($1, $2)", [id, plate]);
+  // Image rows are created by the server upload route (service role) — mirror that here.
+  await tx.asService();
   for (let i = 0; i < 3; i++) {
     await tx.sql(
       "insert into public.listing_images (listing_id, storage_path, sort_order, is_cover, status, content_hash) values ($1, $2, $3, $4, 'ready', $5)",
       [id, `listings/${id}/${i}-${plate}.webp`, i, i === 0, (overrides.imageHashPrefix ?? "img_") + plate + "_" + i]
     );
   }
+  await tx.asUser(uid);
   return id;
 }
 

@@ -161,7 +161,7 @@ d("permissions and RLS", () => {
     });
   });
 
-  it("images cannot be attached to someone else's listing and are capped at 15", async () => {
+  it("users cannot insert image rows directly (server-only), and images are capped at 15 for everyone", async () => {
     await withTx(async (tx) => {
       const s1 = await makeSeller(tx, "+972501000017");
       const s2 = await makeSeller(tx, "+972501000018");
@@ -169,8 +169,47 @@ d("permissions and RLS", () => {
       await tx.asUser(s2.uid);
       await expect(tx.sql("insert into public.listing_images (listing_id, storage_path) values ($1, 'listings/x/y.webp')", [id])).rejects.toThrow();
       await tx.asUser(s1.uid);
+      await expect(tx.sql("insert into public.listing_images (listing_id, storage_path, content_hash) values ($1, $2, 'forged')", [id, `listings/${id}/forged.webp`])).rejects.toThrow();
+      // owner may still reorder / set cover / alt text
+      const upd = await tx.sql("update public.listing_images set alt_text = 'חזית', content_hash = 'tamper' where listing_id = $1 and sort_order = 0 returning alt_text, content_hash", [id]);
+      expect(upd.rows[0].alt_text).toBe("חזית");
+      expect(upd.rows[0].content_hash).not.toBe("tamper");
+      await tx.asService();
       for (let i = 3; i < 15; i++) await tx.sql("insert into public.listing_images (listing_id, storage_path, status) values ($1, $2, 'ready')", [id, `listings/${id}/${i}.webp`]);
       await expect(tx.sql("insert into public.listing_images (listing_id, storage_path) values ($1, $2)", [id, `listings/${id}/16.webp`])).rejects.toThrow(/TOO_MANY_IMAGES/);
+    });
+  });
+
+  it("plate hashes are computed by the database and cannot be spoofed by sellers", async () => {
+    await withTx(async (tx) => {
+      const { uid, declarationId } = await makeSeller(tx, "+972501000030");
+      const id = await makeDraftListing(tx, uid, declarationId, { plate: "4455667" });
+      await tx.asUser(uid);
+      let r = await tx.sql("select plate_hash, plate_masked from public.listings where id = $1", [id]);
+      expect(r.rows[0].plate_hash).toMatch(/^[0-9a-f]{64}$/);
+      expect(r.rows[0].plate_masked).toBe("••-•••-67");
+      const original = r.rows[0].plate_hash;
+      await tx.sql("update public.listings set plate_hash = 'spoofed', plate_masked = 'x' where id = $1", [id]);
+      r = await tx.sql("select plate_hash, plate_masked from public.listings where id = $1", [id]);
+      expect(r.rows[0].plate_hash).toBe(original);
+      // the salt and hash function are not reachable from user sessions
+      await expect(tx.sql("select public.compute_plate_hash('4455667')")).rejects.toThrow(/permission denied/);
+      await expect(tx.sql("select * from private.secrets")).rejects.toThrow(/permission denied/);
+      // once submitted, the plate is locked
+      await tx.sql("update public.listings set status = 'pending_review' where id = $1", [id]);
+      await expect(tx.sql("update public.listing_private_data set plate_number = '1111111' where listing_id = $1", [id])).rejects.toThrow(/PLATE_LOCKED|row-level/);
+    });
+  });
+
+  it("non-private ownership raises a review flag on submission", async () => {
+    await withTx(async (tx) => {
+      const { uid, declarationId } = await makeSeller(tx, "+972501000031");
+      const id = await makeDraftListing(tx, uid, declarationId, { plate: "4455668" });
+      await tx.asUser(uid);
+      await tx.sql("update public.listings set ownership_type = 'leasing', status = 'pending_review' where id = $1", [id]);
+      await tx.asSuper();
+      const f = await tx.sql("select details->>'reason' as reason from public.moderation_flags where listing_id = $1", [id]);
+      expect(f.rows.map((x) => x.reason)).toContain("non_private_ownership");
     });
   });
 

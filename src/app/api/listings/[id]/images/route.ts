@@ -69,7 +69,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   if (upErr) return NextResponse.json({ error: "העלאה נכשלה: " + upErr.message }, { status: 500 });
 
   const sortOrder = existing?.length ?? 0;
-  const { data: row, error } = await supabase
+  // Image rows are created by the server only (RLS: no user inserts), after processing + hashing.
+  const { data: row, error } = await admin
     .from("listing_images")
     .insert({ id: imageId, listing_id: listing.id, bucket: BUCKET, storage_path: path, sort_order: sortOrder, is_cover: sortOrder === 0, width: processed.width, height: processed.height, bytes: processed.bytes, mime_type: "image/webp", content_hash: processed.contentHash, perceptual_hash: processed.perceptualHash, alt_text: alt, status: "ready" })
     .select("id, storage_path, sort_order, is_cover, alt_text, width, height")

@@ -73,7 +73,7 @@ d("private-seller rules (database)", () => {
       const s2 = await makeSeller(tx, "+972500000008");
       await makeDraftListing(tx, s1.uid, s1.declarationId, { plate: "8888888", imageHashPrefix: "same_" });
       const b = await makeDraftListing(tx, s2.uid, s2.declarationId, { plate: "9999999", imageHashPrefix: "same_" });
-      await tx.asUser(s2.uid);
+      await tx.asService();
       await tx.sql("insert into public.listing_images (listing_id, storage_path, sort_order, status, content_hash) values ($1, $2, 9, 'ready', 'same_8888888_0')", [b, `listings/${b}/dup.webp`]);
       await tx.asSuper();
       const { rows } = await tx.sql("select flag_type from public.moderation_flags where listing_id = $1", [b]);

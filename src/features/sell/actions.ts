@@ -5,8 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createSupabaseServerClient, getCurrentUser, createSupabaseAdminClient } from "@/lib/supabase/server";
 import { fail, succeed, translateDbError, type ActionResult } from "@/lib/actions/result";
-import { hashPlate } from "@/lib/security/hash";
-import { parsePlate, maskPlateDigits } from "@/lib/vehicle/plate";
+import { parsePlate } from "@/lib/vehicle/plate";
 import { lookupVehicle } from "@/features/vehicle-check/service";
 import { getClientIp, getUserAgent } from "@/lib/security/request";
 import { hashIp } from "@/lib/security/hash";
@@ -96,10 +95,8 @@ export async function lookupForListingAction(listingId: string, plateInput: stri
   if (own) prefill.ownership_type = /פרטי/.test(own) ? "private" : /ליסינג/.test(own) ? "leasing" : /השכרה/.test(own) ? "rental" : /חברה/.test(own) ? "company" : "other";
   if (report.registration.firstOnRoad.value) prefill.first_registration_date = report.registration.firstOnRoad.value;
 
-  const plateHash = hashPlate(parsed.plate);
+  // plate_hash / plate_masked are computed by the database from listing_private_data (migration 0012).
   const update: Record<string, unknown> = {
-    plate_hash: plateHash,
-    plate_masked: maskPlateDigits(parsed.plate),
     official_data: report,
     official_data_fetched_at: report.fetchedAt,
     lookup_result_id: outcome.resultId,
