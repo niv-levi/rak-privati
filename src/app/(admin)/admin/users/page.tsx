@@ -35,11 +35,11 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
             {(users ?? []).map((u) => (
               <tr key={u.id} className="border-t border-border">
                 <td className="p-3"><Link href={`/admin/users/${u.id}`} className="font-semibold hover:underline underline-offset-4">{u.display_name ?? "ללא שם"}</Link></td>
-                <td className="p-3 num">{maskPhone(u.phone_e164)} {u.phone_verified_at && <Badge variant="success">מאומת</Badge>}</td>
+                <td className="p-3"><span className="num">{maskPhone(u.phone_e164)} {u.phone_verified_at && <Badge variant="success">מאומת</Badge>}</span></td>
                 <td className="p-3"><Badge variant={u.account_status === "active" ? "success" : u.account_status === "warned" ? "warning" : "destructive"}>{accountStatusLabels[u.account_status]}</Badge>{u.review_level === "strict" && <Badge variant="warning" className="ms-1">מחמיר</Badge>}</td>
-                <td className="p-3 num">{listingsBy.get(u.id) ?? 0}{u.max_active_listings != null && <span className="text-xs text-muted-foreground"> (מגבלה {u.max_active_listings})</span>}</td>
-                <td className="p-3 num">{flagsBy.get(u.id) ? <Badge variant="destructive">{flagsBy.get(u.id)}</Badge> : "—"}</td>
-                <td className="p-3 num text-xs text-muted-foreground">{formatDateTime(u.created_at)}</td>
+                <td className="p-3"><span className="num">{listingsBy.get(u.id) ?? 0}{u.max_active_listings != null && <span className="text-xs text-muted-foreground"> (מגבלה {u.max_active_listings})</span>}</span></td>
+                <td className="p-3"><span className="num">{flagsBy.get(u.id) ? <Badge variant="destructive">{flagsBy.get(u.id)}</Badge> : "—"}</span></td>
+                <td className="p-3 text-xs text-muted-foreground"><span className="num">{formatDateTime(u.created_at)}</span></td>
               </tr>
             ))}
             {(users ?? []).length === 0 && <tr><td colSpan={6} className="p-6 text-center text-muted-foreground">לא נמצאו משתמשים.</td></tr>}

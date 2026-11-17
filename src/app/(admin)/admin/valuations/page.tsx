@@ -26,7 +26,7 @@ export default async function AdminValuationsPage() {
         <CardContent>
           {(recent ?? []).length === 0 ? <p className="text-sm text-muted-foreground">אין הערכות עדיין.</p> : (
             <table className="w-full text-sm"><caption className="sr-only">הערכות אחרונות</caption><thead className="text-xs text-muted-foreground"><tr><th scope="col" className="p-2 text-start">תאריך</th><th scope="col" className="p-2 text-start">שנה</th><th scope="col" className="p-2 text-start">טווח</th><th scope="col" className="p-2 text-start">מודעות דומות</th><th scope="col" className="p-2 text-start">ביטחון</th></tr></thead>
-              <tbody>{(recent ?? []).map((v) => <tr key={v.id} className="border-t border-border"><td className="p-2 num">{formatDateTime(v.created_at)}</td><td className="p-2 num">{(v.input as { year?: number }).year ?? "—"}</td><td className="p-2 num">{v.estimated_low ? `${formatPrice(v.estimated_low)} – ${formatPrice(v.estimated_high)}` : "לא חושב"}</td><td className="p-2 num">{v.comparable_count}</td><td className="p-2">{v.confidence}</td></tr>)}</tbody></table>
+              <tbody>{(recent ?? []).map((v) => <tr key={v.id} className="border-t border-border"><td className="p-2"><span className="num">{formatDateTime(v.created_at)}</span></td><td className="p-2"><span className="num">{(v.input as { year?: number }).year ?? "—"}</span></td><td className="p-2"><span className="num">{v.estimated_low ? `${formatPrice(v.estimated_low)} – ${formatPrice(v.estimated_high)}` : "לא חושב"}</span></td><td className="p-2"><span className="num">{v.comparable_count}</span></td><td className="p-2">{v.confidence}</td></tr>)}</tbody></table>
           )}
         </CardContent>
       </Card>

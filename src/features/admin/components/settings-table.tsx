@@ -23,7 +23,7 @@ export function SettingsTable({ settings, canEdit }: { settings: { key: string; 
               <td className="p-3 font-mono text-xs" dir="ltr">{s.key}</td>
               <td className="p-3 text-muted-foreground">{s.description}</td>
               <td className="p-3"><label htmlFor={`set-${s.key}`} className="sr-only">ערך עבור {s.key}</label><Input id={`set-${s.key}`} dir="ltr" value={values[s.key] ?? ""} onChange={(e) => setValues({ ...values, [s.key]: e.target.value })} disabled={!canEdit} className="h-9 font-mono text-xs" /></td>
-              <td className="p-3 num text-xs text-muted-foreground">{formatDateTime(s.updated_at)}</td>
+              <td className="p-3 text-xs text-muted-foreground"><span className="num">{formatDateTime(s.updated_at)}</span></td>
               <td className="p-3">{canEdit && <Button size="sm" variant="outline" disabled={pending || values[s.key] === s.value} onClick={() => start(async () => { const r = await updateSettingAction(s.key, values[s.key] ?? ""); push(r.ok ? { kind: "success", title: r.message ?? "נשמר" } : { kind: "error", title: r.error }); router.refresh(); })}>שמירה</Button>}</td>
             </tr>
           ))}

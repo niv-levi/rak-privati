@@ -24,7 +24,7 @@ export default async function AdminCatalogPage() {
           <CardContent>
             <div className="max-h-[60vh] overflow-y-auto">
               <table className="w-full text-sm"><caption className="sr-only">יצרנים</caption><thead className="text-xs text-muted-foreground"><tr><th scope="col" className="p-2 text-start">slug</th><th scope="col" className="p-2 text-start">עברית</th><th scope="col" className="p-2 text-start">English</th><th scope="col" className="p-2 text-start">דגמים</th><th scope="col" className="p-2 text-start">פופולרי</th></tr></thead>
-                <tbody>{(makes ?? []).map((m) => <tr key={m.id} className="border-t border-border"><td className="p-2 num" dir="ltr">{m.slug}</td><td className="p-2">{m.name_he}</td><td className="p-2" dir="ltr">{m.name_en}</td><td className="p-2 num">{perMake.get(m.id) ?? 0}</td><td className="p-2">{m.is_popular ? "כן" : ""}</td></tr>)}</tbody>
+                <tbody>{(makes ?? []).map((m) => <tr key={m.id} className="border-t border-border"><td className="p-2 num" dir="ltr">{m.slug}</td><td className="p-2">{m.name_he}</td><td className="p-2" dir="ltr">{m.name_en}</td><td className="p-2"><span className="num">{perMake.get(m.id) ?? 0}</span></td><td className="p-2">{m.is_popular ? "כן" : ""}</td></tr>)}</tbody>
               </table>
             </div>
           </CardContent>

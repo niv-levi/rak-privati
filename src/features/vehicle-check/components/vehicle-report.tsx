@@ -167,7 +167,7 @@ export function VehicleReportView({ report, className }: { report: VehicleReport
                 <thead><tr className="text-start text-xs text-muted-foreground"><th scope="col" className="py-1 text-start font-semibold">תאריך</th><th scope="col" className="py-1 text-end font-semibold">נסועה (ק״מ)</th></tr></thead>
                 <tbody>
                   {report.mileageHistory.records.map((r, i) => (
-                    <tr key={i} className="border-t border-border"><td className="py-1.5 num">{r.date ? formatDate(r.date) : "—"}</td><td className="py-1.5 text-end num font-semibold">{formatNumber(r.km)}</td></tr>
+                    <tr key={i} className="border-t border-border"><td className="py-1.5"><span className="num">{r.date ? formatDate(r.date) : "—"}</span></td><td className="py-1.5 text-end font-semibold"><span className="num">{formatNumber(r.km)}</span></td></tr>
                   ))}
                 </tbody>
               </table>

@@ -31,7 +31,7 @@ export default async function AdminReportsPage() {
                   <td className="p-3"><Link href={`/admin/listings/${r.listing_id}`} className="font-semibold hover:underline underline-offset-4">{l?.make_name} {l?.model_name}</Link><p className="text-xs text-muted-foreground">{l?.status}</p></td>
                   <td className="p-3"><Badge variant={r.reason === "suspected_dealer" ? "destructive" : "muted"}>{reportReasonLabels[r.reason]}</Badge></td>
                   <td className="max-w-xs p-3 text-muted-foreground">{r.details || "—"}{r.resolution_notes && <p className="mt-1 text-xs">החלטה: {r.resolution_notes}</p>}</td>
-                  <td className="p-3 num text-xs text-muted-foreground">{formatDateTime(r.created_at)}</td>
+                  <td className="p-3 text-xs text-muted-foreground"><span className="num">{formatDateTime(r.created_at)}</span></td>
                   <td className="p-3"><Badge variant={r.status === "open" ? "warning" : "muted"}>{r.status}</Badge></td>
                   <td className="p-3">{canModerate && r.status !== "resolved" && r.status !== "dismissed" && <ReportRowActions reportId={r.id} />}</td>
                 </tr>

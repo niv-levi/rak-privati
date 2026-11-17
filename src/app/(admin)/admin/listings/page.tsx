@@ -46,10 +46,10 @@ export default async function AdminListingsPage({ searchParams }: { searchParams
               return (
                 <tr key={l.id} className="border-t border-border">
                   <td className="p-3"><Link href={`/admin/listings/${l.id}`} className="font-semibold hover:underline underline-offset-4">{l.make_name ?? "—"} {l.model_name ?? ""} <span className="num">{l.year ?? ""}</span></Link><p className="text-xs text-muted-foreground num">{l.plate_masked ?? "ללא מספר"}</p></td>
-                  <td className="p-3 num">{formatPrice(l.price)}</td>
+                  <td className="p-3"><span className="num">{formatPrice(l.price)}</span></td>
                   <td className="p-3"><Link href={`/admin/users/${l.seller_id}`} className="hover:underline underline-offset-4">{seller?.display_name ?? "ללא שם"}</Link>{seller?.review_level === "strict" && <Badge variant="warning" className="ms-1">בדיקה מחמירה</Badge>}{seller && seller.account_status !== "active" && <Badge variant="destructive" className="ms-1">{seller.account_status}</Badge>}</td>
                   <td className="p-3"><ul className="flex flex-wrap gap-1">{fl.map((f, i) => <li key={i}><Badge variant={f.severity >= 3 ? "destructive" : "warning"} title={flagTypeLabels[f.flag_type]}>{flagTypeLabels[f.flag_type]}</Badge></li>)}</ul></td>
-                  <td className="p-3 num text-xs text-muted-foreground">{formatDateTime(l.submitted_at ?? l.created_at)}</td>
+                  <td className="p-3 text-xs text-muted-foreground"><span className="num">{formatDateTime(l.submitted_at ?? l.created_at)}</span></td>
                   <td className="p-3"><Badge variant="muted">{listingStatusLabels[l.status]}</Badge></td>
                   <td className="p-3 text-end"><Link href={`/admin/listings/${l.id}`} className="font-semibold text-primary underline-offset-4 hover:underline">בדיקה</Link></td>
                 </tr>

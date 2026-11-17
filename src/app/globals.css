@@ -184,7 +184,7 @@
   .sr-only-focusable:not(:focus):not(:focus-within) {
     @apply sr-only;
   }
-  .text-display { font-size: var(--text-display); line-height: 1.1; letter-spacing: -0.01em; }
+  .text-display { font-size: clamp(2rem, 1.2rem + 3.2vw, var(--text-display)); line-height: 1.1; letter-spacing: -0.01em; }
   .scrollbar-none { scrollbar-width: none; }
   .scrollbar-none::-webkit-scrollbar { display: none; }
 }

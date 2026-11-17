@@ -1751,6 +1751,7 @@ export type Database = {
       increment_listing_views: { Args: { p_listing: string }; Returns: undefined };
       is_admin: { Args: Record<string, never>; Returns: boolean };
       is_moderator: { Args: Record<string, never>; Returns: boolean };
+      is_privileged_session: { Args: Record<string, never>; Returns: boolean };
       is_service_role: { Args: Record<string, never>; Returns: boolean };
       listing_limit_for: { Args: { p_user: string }; Returns: number };
       notify_saved_search_matches: { Args: { p_listing: string }; Returns: number };

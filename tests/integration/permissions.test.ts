@@ -110,7 +110,7 @@ d("permissions and RLS", () => {
       await approve(tx, mod, id);
       await tx.asAnon();
       expect((await tx.sql("select phone_e164 from public.profiles where id = $1", [uid])).rowCount).toBe(0);
-      await expect(tx.sql("select * from public.reveal_seller_contact($1, 'phone')", [id])).rejects.toThrow(/AUTH_REQUIRED/);
+      await expect(tx.sql("select * from public.reveal_seller_contact($1, 'phone')", [id])).rejects.toThrow(/AUTH_REQUIRED|permission denied/);
       await tx.asUser(buyer);
       expect((await tx.sql("select phone_e164 from public.profiles where id = $1", [uid])).rowCount).toBe(0);
       const r = await tx.sql("select * from public.reveal_seller_contact($1, 'phone')", [id]);

@@ -71,6 +71,7 @@ export default async function HomePage() {
       <section className="container-page grid gap-10 py-10 lg:grid-cols-2" aria-label="חיפוש מהיר לפי יצרן וקטגוריה">
         <div className="space-y-4">
           <h2 className="text-h2 font-extrabold">יצרנים פופולריים</h2>
+          {popular.length === 0 && <p className="text-sm text-muted-foreground">קטלוג היצרנים ייטען לאחר חיבור מסד הנתונים. <Link href="/cars" className="underline underline-offset-4">לחיפוש חופשי</Link></p>}
           <ul className="grid grid-cols-3 gap-2 sm:grid-cols-4">
             {popular.map((m) => <li key={m.id}><Link href={`/cars?make=${m.id}`} className="block rounded-md border border-border bg-card px-3 py-3 text-center text-sm font-semibold transition-colors hover:border-primary hover:text-primary focus-visible:outline-2 focus-visible:outline-ring">{m.name_he}</Link></li>)}
           </ul>
