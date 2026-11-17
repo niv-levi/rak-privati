@@ -1,3 +1,4 @@
+import { isoDaysAgo } from "@/lib/time";
 import { requireRole, hasRole } from "@/lib/auth/guards";
 import { PageHeader } from "@/components/layout/page-header";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -13,7 +14,7 @@ export default async function AdminVehicleDataPage() {
   const [health, { data: runs }, { data: lookups }] = await Promise.all([
     getProviderHealth(),
     supabase.from("vehicle_data_sync_runs").select("id, status, started_at, finished_at, rows_processed, error, notes, source_id, vehicle_data_sources(name_he)").order("started_at", { ascending: false }).limit(20),
-    supabase.from("vehicle_lookup_requests").select("status").gte("created_at", new Date(Date.now() - 7 * 86400000).toISOString()).limit(5000),
+    supabase.from("vehicle_lookup_requests").select("status").gte("created_at", isoDaysAgo(7)).limit(5000),
   ]);
   const byStatus = new Map<string, number>(); for (const l of lookups ?? []) byStatus.set(l.status, (byStatus.get(l.status) ?? 0) + 1);
   return (

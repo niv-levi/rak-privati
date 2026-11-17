@@ -1,3 +1,4 @@
+import { isoDaysAgo } from "@/lib/time";
 import Link from "next/link";
 import { requireRole } from "@/lib/auth/guards";
 import { StatCard } from "@/features/admin/components/stat-card";
@@ -27,7 +28,7 @@ export default async function AdminDashboard() {
     supabase.from("profiles").select("id", { count: "exact", head: true }).or("review_level.eq.strict,account_status.in.(suspended,blocked)"),
     supabase.from("moderation_actions").select("id, action, reason, created_at, listing_id, target_user_id").order("created_at", { ascending: false }).limit(8),
     supabase.from("moderation_flags").select("id, flag_type, severity, created_at, listing_id").eq("status", "open").order("severity", { ascending: false }).order("created_at", { ascending: false }).limit(6),
-    supabase.from("analytics_events").select("event_name").gte("created_at", new Date(Date.now() - 7 * 86400000).toISOString()).limit(5000),
+    supabase.from("analytics_events").select("event_name").gte("created_at", isoDaysAgo(7)).limit(5000),
   ]);
   void count;
   const health = await getProviderHealth();

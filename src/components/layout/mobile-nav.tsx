@@ -14,7 +14,11 @@ import { signOutAction } from "@/features/auth/actions";
 export function MobileNav({ user }: { user: HeaderUser }) {
   const [open, setOpen] = React.useState(false);
   const pathname = usePathname();
-  React.useEffect(() => setOpen(false), [pathname]);
+  const [lastPath, setLastPath] = React.useState(pathname);
+  if (lastPath !== pathname) {
+    setLastPath(pathname);
+    setOpen(false);
+  }
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>

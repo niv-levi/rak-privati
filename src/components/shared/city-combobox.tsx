@@ -13,7 +13,11 @@ export function CityCombobox({ id, cities, value, onChange, placeholder = "הת�
   const [open, setOpen] = React.useState(false);
   const [active, setActive] = React.useState(0);
   const wrapRef = React.useRef<HTMLDivElement>(null);
-  React.useEffect(() => { setQuery(selected?.name_he ?? ""); }, [selected?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  const [syncedId, setSyncedId] = React.useState(selected?.id ?? null);
+  if ((selected?.id ?? null) !== syncedId) {
+    setSyncedId(selected?.id ?? null);
+    if (selected) setQuery(selected.name_he);
+  }
 
   const results = React.useMemo(() => {
     const q = query.trim();

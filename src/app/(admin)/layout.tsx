@@ -6,6 +6,9 @@ import { AdminNav } from "@/features/admin/components/admin-nav";
 import { roleLabels } from "@/lib/labels";
 import { Badge } from "@/components/ui/badge";
 
+/** Header and guards depend on the request's session: never prerender. */
+export const dynamic = "force-dynamic";
+
 export const metadata = { robots: { index: false, follow: false } };
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {

@@ -28,11 +28,8 @@ export function ImageEditor({ open, onOpenChange, src, initial, onApply }: { ope
   const stageRef = React.useRef<HTMLDivElement>(null);
   const drag = React.useRef<{ x: number; y: number; cx: number; cy: number } | null>(null);
 
-  React.useEffect(() => {
-    if (open) { setRotate(initial.rotate); setAspect(initial.aspect); setZoom(1); setCenter({ x: 0.5, y: 0.5 }); }
-  }, [open, initial]);
 
-  const rotatedDims = natural ? (rotate % 180 === 0 ? natural : { w: natural.h, h: natural.w }) : null;
+  const rotatedDims = React.useMemo(() => (natural ? (rotate % 180 === 0 ? natural : { w: natural.h, h: natural.w }) : null), [natural, rotate]);
   const frame = React.useMemo(() => {
     if (!rotatedDims) return null;
     const imgAspect = rotatedDims.w / rotatedDims.h;

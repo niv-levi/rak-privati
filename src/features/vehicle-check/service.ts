@@ -5,7 +5,6 @@ import { parsePlate, maskPlateDigits } from "@/lib/vehicle/plate";
 import { rateLimit } from "@/lib/security/rate-limit";
 import { govVehiclesProvider, govHistoryProvider, govRecallsProvider, recordProviderOutcome } from "@/lib/providers/registry";
 import { REPORT_DISCLAIMER, type AttributedField, type DataStatus, type SourceRef, type VehicleReport } from "@/lib/providers/types";
-import type { GovVehicleRecord } from "@/lib/providers/gov-il/vehicles";
 import { track } from "@/lib/analytics/track";
 
 export type LookupOutcome =

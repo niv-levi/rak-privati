@@ -4,6 +4,7 @@ import { siteConfig } from "@/lib/config/site";
 import { ToastProvider } from "@/components/ui/toast";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Direction } from "radix-ui";
+import { ServiceWorkerRegister } from "@/components/shared/sw-register";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -11,7 +12,6 @@ export const metadata: Metadata = {
   title: { default: `${siteConfig.name} – ${siteConfig.tagline}`, template: `%s | ${siteConfig.name}` },
   description: siteConfig.description,
   applicationName: siteConfig.name,
-  manifest: "/manifest.webmanifest",
   appleWebApp: { capable: true, title: siteConfig.name, statusBarStyle: "default" },
   openGraph: { type: "website", locale: "he_IL", siteName: siteConfig.name, title: `${siteConfig.name} – ${siteConfig.tagline}`, description: siteConfig.description },
   twitter: { card: "summary_large_image" },
@@ -32,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Direction.Provider dir="rtl">
           <TooltipProvider delayDuration={200}>
             <ToastProvider>{children}</ToastProvider>
+            <ServiceWorkerRegister />
           </TooltipProvider>
         </Direction.Provider>
       </body>

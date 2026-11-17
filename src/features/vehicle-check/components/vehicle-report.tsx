@@ -1,6 +1,6 @@
 import { AlertTriangle, Car, ClipboardList, Database, FileWarning, Gauge, History, Info, ShieldAlert, Users, Wrench } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { formatDate, formatNumber } from "@/lib/format";
 import type { AttributedField, DataStatus, SourceRef, VehicleReport } from "@/lib/providers/types";

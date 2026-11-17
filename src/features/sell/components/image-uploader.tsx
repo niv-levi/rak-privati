@@ -183,7 +183,7 @@ export function ImageUploader({ listingId, initial, onChange }: { listingId: str
       )}
 
       {editing && (
-        <ImageEditor open={!!editing} onOpenChange={(v) => !v && setEditing(null)} src={editing.previewUrl} initial={editing.edit} onApply={(edit) => setQueue((q) => q.map((x) => (x.localId === editing.localId ? { ...x, edit } : x)))} />
+        <ImageEditor key={editing.localId} open={!!editing} onOpenChange={(v) => !v && setEditing(null)} src={editing.previewUrl} initial={editing.edit} onApply={(edit) => setQueue((q) => q.map((x) => (x.localId === editing.localId ? { ...x, edit } : x)))} />
       )}
     </div>
   );

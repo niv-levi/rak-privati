@@ -61,7 +61,6 @@ function FiltersForm({ filters, makes, models, districts, cities, onApplied }: P
   const [f, setF] = React.useState<SearchFilters>(filters);
   const [makeQuery, setMakeQuery] = React.useState("");
   const [cityQuery, setCityQuery] = React.useState("");
-  React.useEffect(() => setF(filters), [filters]);
 
   const set = <K extends keyof SearchFilters>(k: K, v: SearchFilters[K]) => setF((prev) => ({ ...prev, [k]: v, page: 1 }));
   const apply = (e?: React.FormEvent) => {
@@ -219,7 +218,7 @@ export function SearchFilters(props: Props) {
       <aside className="hidden lg:block" aria-label="סינון">
         <div className="sticky top-20 max-h-[calc(100dvh-6rem)] overflow-y-auto rounded-lg border border-border bg-card p-4 shadow-card">
           <h2 className="mb-2 flex items-center gap-2 text-base font-bold"><SlidersHorizontal className="size-4" aria-hidden /> סינון{count > 0 && <span className="rounded-full bg-primary px-2 py-0.5 text-xs text-white num">{count}</span>}</h2>
-          <FiltersForm {...props} />
+          <FiltersForm key={JSON.stringify(props.filters)} {...props} />
         </div>
       </aside>
       <div className="lg:hidden">
@@ -235,7 +234,7 @@ export function SearchFilters(props: Props) {
               <SheetDescription className="sr-only">בחירת מסננים לחיפוש רכבים</SheetDescription>
             </SheetHeader>
             <div className="mt-4">
-              <FiltersForm {...props} onApplied={() => setOpen(false)} />
+              <FiltersForm key={JSON.stringify(props.filters)} {...props} onApplied={() => setOpen(false)} />
             </div>
           </SheetContent>
         </Sheet>

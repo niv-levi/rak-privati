@@ -12,8 +12,15 @@ import { fuelLabels, transmissionLabels, ownershipLabels, bodyStyleLabels, condi
 
 export function ComparePageClient() {
   const { ids, remove, clear, hydrated } = useCompare();
-  const [rows, setRows] = React.useState<CompareRow[] | null>(null);
-  React.useEffect(() => { if (!hydrated) return; if (!ids.length) return setRows([]); fetchCompareAction(ids).then(setRows); }, [ids, hydrated]);
+  const [result, setResult] = React.useState<{ key: string; rows: CompareRow[] } | null>(null);
+  const key = ids.join(",");
+  React.useEffect(() => {
+    if (!key) return;
+    let alive = true;
+    fetchCompareAction(key.split(",")).then((r) => { if (alive) setResult({ key, rows: r }); });
+    return () => { alive = false; };
+  }, [key]);
+  const rows: CompareRow[] | null = !key ? [] : result?.key === key ? result.rows : null;
   const attrs: { label: string; get: (r: CompareRow) => React.ReactNode }[] = [
     { label: "מחיר", get: (r) => <span className="num font-bold">{formatPrice(r.price)}</span> },
     { label: "שנה", get: (r) => <span className="num">{r.year ?? "—"}</span> },
