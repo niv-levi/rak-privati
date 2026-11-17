@@ -77,3 +77,32 @@ See `docs/DATABASE.md`. Migrations:
 - In-app chat (architecture prepared via `contact_events` + `conversation` placeholder design, no fake chat).
 - Payments / promoted listings.
 - Motorcycles, trucks, fleets, dealers (never).
+
+---
+
+## 9. Status (updated 2026-11-17)
+
+### Done
+| Area | Status |
+|---|---|
+| Brand & design system | Logo family (7 SVGs) + PWA icons, tokens incl. accessible derived shades, Heebo self-hosted, Radix primitives |
+| Database | 12 migrations, seed (settings, policy versions, providers, 56 makes / ~300 models, 7 districts / 16 sub-districts / ~150 localities with coordinates) |
+| Auth | Phone OTP (Supabase), consents, open-redirect-safe `next`, rate limits; provider not configured |
+| Marketplace | Search RPC (filters, radius, sort, pagination), URL state, chips, saved searches, grid/list, empty states |
+| Listing detail | Gallery (keyboard), spec sheet with origin tags, official-data card, price context, contact reveal (phone/WhatsApp), favorite, share, compare, report, similar listings, JSON-LD |
+| Publishing | 9-step autosaving wizard, plate lookup + prefill, discrepancy flag, image uploader (drag/drop, progress, reorder, cover, rotate/crop, alt), declaration, preview, submit; limited editing for active listings |
+| Accounts | Dashboard, my listings (pause/sold/remove/appeal), favorites, searches, saved reports, notifications + preferences, profile & consents, security, deletion |
+| Admin | Dashboard metrics, moderation queue + detail, flags, users (warn/suspend/block/strict/limit), roles, reports/appeals/contact messages, provider health + test lookup, catalog CSV import, valuation config, audit log with chain check, settings |
+| Vehicle data | CKAN adapters (configurable), report builder with attribution/conflicts/warnings/missing, caching, rate limits, dev fixtures |
+| Valuation | Internal asking-price IQR with thresholds/confidence; commercial provider honestly not configured |
+| Content | Terms, privacy, cookies, accessibility, private-seller policy, data sources, how-it-works, about, help, FAQ, contact |
+| SEO/PWA | Metadata, OG, canonical, sitemap (active listings only), robots, manifest, service worker (never caches private routes), offline page |
+| Security review | Function grant hardening (0011), DB-computed plate hash + server-only image rows (0012), forced dynamic rendering of guarded trees |
+| Tests | 74 unit, 39 DB integration, 140 e2e (desktop+mobile, axe) – all passing |
+
+### Remaining (external or needs a running Supabase)
+- Configure Supabase project + SMS provider; bootstrap first admin.
+- Verify data.gov.il resource ids/field maps live; confirm licence.
+- Commercial valuation/history providers (agreements).
+- Email/SMS notification delivery adapters, push (VAPID).
+- Authenticated E2E tests against a real Supabase stack; manual screen-reader pass; external accessibility audit; legal review; nonce-based CSP; penetration test.

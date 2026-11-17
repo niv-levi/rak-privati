@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# רק פרטי (Rak Privati)
 
-## Getting Started
+> **רכב קונים מאנשים. לא מסוחרים.**
+> An Israeli used-car marketplace for **private sellers only**. Hebrew-first, RTL, mobile-first, accessible.
 
-First, run the development server:
+No dealerships, traders, car lots, leasing companies or commercial accounts. The private-only rule is enforced in the product flow, in server code **and in the database** (triggers + RLS).
+
+## Stack
+
+Next.js 16 (App Router, React 19, TypeScript strict) · Tailwind CSS 4 · Radix UI (shadcn-style primitives in `src/components/ui`) · Supabase (Postgres, Auth phone OTP, Storage) · Zod · React Hook Form · Sharp · Vitest · Playwright + axe-core · Vercel.
+
+## Quick start (local)
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env.local          # fill in Supabase values (see docs/DEPLOYMENT.md)
+npm install
+npm run dev                         # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Without Supabase variables the app runs in a clearly-labelled demo mode: public pages work, while login, publishing and saved data are disabled. No data is faked.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+To see a populated vehicle report without government access, set `USE_DEV_FIXTURES=true` (development only, ignored in production) and check plates `1234567`, `7654321`, `8888888` or `9999999` (simulated outage).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts
 
-## Learn More
+| Command | What it does |
+|---|---|
+| `npm run dev` / `build` / `start` | Next.js |
+| `npm run lint` / `typecheck` | ESLint 9 / `tsc --noEmit` |
+| `npm test` | Unit tests (Vitest); DB tests auto-skip unless enabled |
+| `npm run test:db` | SQL integration tests against `DATABASE_URL` (local Postgres) |
+| `npm run test:e2e` | Playwright (desktop + mobile, axe) against a production build |
+| `npm run db:reset:local` | Apply local shim + migrations + seed to a **local** DB |
+| `node scripts/gen-db-types.mjs` | Regenerate `src/lib/database.types.ts` from the DB |
 
-To learn more about Next.js, take a look at the following resources:
+## Documentation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `docs/IMPLEMENTATION_PLAN.md` – plan, status, what is done / remaining
+- `docs/PRODUCT_SPECIFICATION.md`, `docs/ARCHITECTURE.md`, `docs/DATABASE.md`
+- `docs/DATA_SOURCES.md` – providers, what is (not) connected, how to configure
+- `docs/PRIVATE_SELLER_POLICY.md` – enforcement design
+- `docs/ACCESSIBILITY.md`, `docs/PRIVACY.md`, `docs/LEGAL_REVIEW_CHECKLIST.md`
+- `docs/DEPLOYMENT.md`, `docs/TESTING.md`, `docs/OPERATIONS.md`, `SECURITY.md`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Status at a glance
 
-## Deploy on Vercel
+Operational in code and tested: marketplace, search, listing detail, publishing wizard, images, moderation/admin, private-seller enforcement, favorites, saved searches, notifications, policies, PWA, SEO.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Not operational until configured or contracted:** SMS provider (Supabase Phone Auth), data.gov.il resource IDs (never tested live from the build environment), commercial valuation and history providers, email provider. See `docs/DATA_SOURCES.md`.

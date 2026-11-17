@@ -13,6 +13,7 @@ export default async function AdminReportsPage() {
     supabase.from("listing_reports").select("id, listing_id, reason, details, status, created_at, resolution_notes, listings(make_name, model_name, status)").order("status").order("created_at", { ascending: false }).limit(200),
     supabase.from("appeals").select("id, user_id, listing_id, message, status, created_at, decision_notes").order("status").order("created_at", { ascending: false }).limit(200),
   ]);
+  const { data: messages } = await supabase.from("contact_messages").select("id, topic, name, email, phone, message, status, created_at").order("created_at", { ascending: false }).limit(100);
   const appealUserIds = [...new Set((appeals ?? []).map((a) => a.user_id))];
   const { data: appealProfiles } = appealUserIds.length ? await supabase.from("profiles").select("id, display_name").in("id", appealUserIds) : { data: [] };
   const nameBy = new Map((appealProfiles ?? []).map((p) => [p.id, p.display_name]));
@@ -39,6 +40,19 @@ export default async function AdminReportsPage() {
             </tbody>
           </table>
         </div>
+      </section>
+      <section id="messages" aria-labelledby="messages-h" className="space-y-4">
+        <h2 id="messages-h" className="text-h2 font-extrabold">פניות מטופס יצירת קשר</h2>
+        <ul className="space-y-3">
+          {(messages ?? []).length === 0 && <li className="rounded-lg border border-border bg-card p-6 text-center text-sm text-muted-foreground">אין פניות.</li>}
+          {(messages ?? []).map((m) => (
+            <li key={m.id} className="rounded-lg border border-border bg-card p-4 text-sm shadow-card">
+              <div className="flex flex-wrap items-center justify-between gap-2"><span className="font-bold">{m.topic}{m.name ? ` · ${m.name}` : ""}</span><span className="flex items-center gap-2"><Badge variant={m.status === "open" ? "warning" : "muted"}>{m.status}</Badge><span className="num text-xs text-muted-foreground">{formatDateTime(m.created_at)}</span></span></div>
+              <p className="mt-1 text-xs text-muted-foreground" dir="ltr">{[m.email, m.phone].filter(Boolean).join(" · ")}</p>
+              <p className="mt-2 whitespace-pre-line">{m.message}</p>
+            </li>
+          ))}
+        </ul>
       </section>
       <section id="appeals" aria-labelledby="appeals-h" className="space-y-4">
         <h2 id="appeals-h" className="text-h2 font-extrabold">ערעורים</h2>
